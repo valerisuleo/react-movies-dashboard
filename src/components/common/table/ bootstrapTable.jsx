@@ -1,13 +1,13 @@
 import React, { Fragment } from "react";
 import _ from "lodash";
 
-const BoorstrapTable = (props) => {
-    const { colsName, collection, valueProp, onBtnClick, onSort, onSelection } = props;
+const BootstrapTable = (props) => {
+    const { cols, collection, valueProp, onBtnClick, onSort, onSelection } = props;
     return (
         <table className="table my-3">
             <thead>
                 <tr>
-                    {colsName.map((item) => (
+                    {cols.map((item) => (
                         <th onClick={() => onSort(item)} key={item.key}>
                             {item.label}
                         </th>
@@ -17,7 +17,7 @@ const BoorstrapTable = (props) => {
             <tbody>
                 {collection.map((item) => (
                     <tr key={item[valueProp]}>
-                        {colsName.map((col) => (
+                        {cols.map((col) => (
                             <td key={col.key} onClick={() => onSelection(item, col)}>
                                 {col.key === "actions" ? (
                                     <Fragment>
@@ -43,4 +43,4 @@ const BoorstrapTable = (props) => {
     );
 };
 
-export default BoorstrapTable;
+export default BootstrapTable;

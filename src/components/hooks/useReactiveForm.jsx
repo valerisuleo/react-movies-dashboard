@@ -132,6 +132,7 @@ function renderSelect(
 }
 
 function renderButton(label, formGroup, errorMessages) {
+    // this check nested obj too!
     const isFormEmpty = Object.values(formGroup)
         .filter((item) => item !== "")
         .map((element) => !Object.values(element).some((obj) => obj !== ""))

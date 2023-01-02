@@ -1,10 +1,10 @@
 import React, { Fragment } from "react";
 import { paginate } from "../../common/pagination/paginate";
-import { tableMaker } from "../../common/table/tableMaker";
+import { colsMaker } from "../../common/table/colsMaker";
 import { sorting } from "../../common/table/sorting";
 import { indexAssign } from "./utils";
 
-import BoorstrapTable from "../../common/table/ bootstrapTable";
+import BootstrapTable from "../../common/table/ bootstrapTable";
 import BootstrapListGroup from "../../common/bootstrapList";
 import BootstrapPagination from "../../common/pagination/bootstrapPagination";
 import Form from "../../common/form/formContainer";
@@ -148,7 +148,7 @@ class MoviesIndex extends Form {
                 className: "btn btn-sm ms-1 btn-danger",
             },
         ];
-        const colsName = tableMaker(obj, cols, actions);
+        const colsName = colsMaker(obj, cols, actions);
         this.setState({ colsName });
     }
 
@@ -272,8 +272,8 @@ class MoviesIndex extends Form {
                     </div>
 
                     <div className="col-9">
-                        <BoorstrapTable
-                            colsName={colsName}
+                        <BootstrapTable
+                            cols={colsName}
                             collection={moviesOnScreen}
                             valueProp={"id"}
                             onBtnClick={this.handleClick}

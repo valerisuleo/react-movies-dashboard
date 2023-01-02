@@ -1,6 +1,6 @@
 import _ from "lodash";
 
-export function tableMaker(obj, cols, actions) {
+export function colsMaker(obj, cols, actions) {
     const colsName = Object.keys(obj)
         .filter((key) => {
             return cols.includes(key);
