@@ -2,14 +2,15 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { colsMaker } from "../common/table/colsMaker";
 import { sorting } from "../common/table/sorting";
+
 function useBootsTable(schema, colsName, actions, collection) {
     const [table, setStateTable] = useState(schema);
 
     useEffect(() => {
         if (collection.length) {
-            console.log("collection", collection);
+            // console.log("collection", collection);
             const clone = { ...table };
-            
+
             clone.cols = setCols(collection);
             clone.itemsDisplayed = sorting(
                 collection,
@@ -18,11 +19,9 @@ function useBootsTable(schema, colsName, actions, collection) {
             );
 
             setStateTable(clone);
-            console.log("clone", clone);
-
+            // console.log("clone", clone);
         }
     }, [collection]);
-
 
     function setCols(data) {
         const obj = data[0];

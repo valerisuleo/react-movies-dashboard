@@ -60,7 +60,7 @@ const MoviesCollection = () => {
     // console.log('data', data);
 
     useEffect(() => {
-        // console.clear();
+        console.clear();
         getFormCtrls();
         getMovies();
     }, []);
@@ -88,8 +88,6 @@ const MoviesCollection = () => {
         const response = await promise;
         const { data } = response;
         setMovies(data);
-        // console.log("movies", movies);
-        return data;
     }
 
     async function createMovie() {
