@@ -3,7 +3,7 @@ import { useState } from "react";
 import { colsMaker } from "../common/table/colsMaker";
 import { sorting } from "../common/table/sorting";
 
-function useBootsTable(schema, colsName, actions, collection) {
+function useBootsTable(schema, colsName, actions, collection, deleteItem) {
     const [table, setStateTable] = useState(schema);
 
     useEffect(() => {
@@ -29,20 +29,26 @@ function useBootsTable(schema, colsName, actions, collection) {
     }
 
     const handleClick = (current, currentBtn) => {
-        console.log(current, currentBtn);
+        // console.log(currentBtn);
+        if (currentBtn.name === "remove") {
+            deleteItem({
+                item: current,
+                btn: currentBtn,
+            });
+        }
     };
 
     const handleSorting = (current) => {
-        // const clone = { ...table };
-        // clone.sortColumn.order =
-        //     clone.sortColumn.order === "asc" ? "desc" : "asc";
-        // clone.sortColumn.path = current.key;
-        // clone.itemsDisplayed = sorting(
-        //     clone.itemsDisplayed,
-        //     current.key,
-        //     clone.sortColumn.order
-        // );
-        // setStateTable(clone);
+        const clone = { ...table };
+        clone.sortColumn.order =
+            clone.sortColumn.order === "asc" ? "desc" : "asc";
+        clone.sortColumn.path = current.key;
+        clone.itemsDisplayed = sorting(
+            clone.itemsDisplayed,
+            current.key,
+            clone.sortColumn.order
+        );
+        setStateTable(clone);
     };
 
     return [table, handleSorting, handleClick];

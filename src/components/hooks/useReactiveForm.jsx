@@ -3,7 +3,7 @@ import InputGroup from "../common/form/bootstrapInput";
 import Select from "../common/form/bootstrapSelect";
 import SimpleReactValidator from "simple-react-validator";
 
-function useFormControl(schema, controllers, doSomething) {
+function useFormControl(schema, controllers, doSubmit) {
     const simpleValidator = useRef(new SimpleReactValidator());
     const [formGroup, setStateFormGroup] = useState(schema);
     const [errorMessages, setStateSimpleValidators] = useState({});
@@ -33,7 +33,7 @@ function useFormControl(schema, controllers, doSomething) {
         validateOnSubmit();
 
         if (current.allValid()) {
-            doSomething();
+            doSubmit();
         } else {
             const clone = { ...current.errorMessages };
             setStateSimpleValidators(clone);

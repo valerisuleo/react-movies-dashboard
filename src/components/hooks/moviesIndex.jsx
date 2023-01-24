@@ -1,13 +1,13 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { indexAssign } from "../views/movies/utils";
-import { colsMaker } from "../common/table/colsMaker";
-
 import httpService from "../../services/httpService";
 import config from "../../config.json";
 import reactiveForm from "./useReactiveForm";
 import BootstrapListGroup from "../common/bootstrapList";
+import BootstrapPagination from "../common/pagination/bootstrapPagination";
 import BootstrapTable from "../common/table/ bootstrapTable";
 import useBootsTable from "./useBsTable";
+import usePagination from "./usePagination";
 
 const MoviesCollection = () => {
     const formSchema = {
@@ -28,6 +28,13 @@ const MoviesCollection = () => {
         sortColumn: { path: "title", order: "asc" },
     };
 
+    const paginateState = {
+        pageSize: 4,
+        currentPage: 1,
+    };
+
+
+
     const colsName = ["title", "numberInStock", "dailyRentalRate"];
     const actions = [
         {
@@ -42,20 +49,26 @@ const MoviesCollection = () => {
         },
     ];
 
-    // _______________________________HOOKS_______________________________
 
+    // _______________________________HOOKS_______________________________
     const [controllers, setControllers] = useState([]);
-    const [genres, setGenres] = useState([]);
     const [movies, setMovies] = useState([]);
+    // const [genres, setGenres] = useState([]);
+
+    // ___________________________CUSTMOM HOOKS___________________________
     const [formGroup, handleChange, handleBlur, handleSubmit, errorMessages] =
-        reactiveForm.useFormControl(formSchema, controllers, doSomething);
+        reactiveForm.useFormControl(formSchema, controllers, doSubmit);
 
     const [data, handleSorting, handleClick] = useBootsTable(
         tableState,
         colsName,
         actions,
-        movies
+        movies,
+        deleteItem
     );
+
+    const [paginateData, handlePageChange] = usePagination(paginateState, movies)
+
 
     // console.log('data', data);
 
@@ -98,35 +111,43 @@ const MoviesCollection = () => {
         setMovies(result);
     }
 
-    // _______________________________FILTER_______________________________
-    function getGenres(movies) {
-        let list = movies
-            .reduce((acc, current) => {
-                const match = acc.find(
-                    (item) => item.genre.id === current.genre.id
-                );
-                if (!match) {
-                    acc.push(current);
-                }
-                return acc || [];
-            }, [])
-            .map((el) => {
-                return {
-                    ...el.genre,
-                    isActive: false,
-                };
-            });
-
-        list = [
-            { id: "", label: "All Genres", value: "all", isActive: true },
-            ...list,
-        ];
-        setGenres(list);
-        // console.log("genres", genres);
+    async function deleteItem(current) {
+        const { item, btn } = current;
+        const result = movies.filter((obj) => obj.id !== item.id);
+        // const moviesOnScreen = paginate(movies, this.state.currentPage, 4);
+        await httpService.delete(`${config.portAPI}/movies/${item.id}`);
+        setMovies(result);
     }
 
+    // _______________________________FILTER_______________________________
+    // function getGenres(movies) {
+    //     let list = movies
+    //         .reduce((acc, current) => {
+    //             const match = acc.find(
+    //                 (item) => item.genre.id === current.genre.id
+    //             );
+    //             if (!match) {
+    //                 acc.push(current);
+    //             }
+    //             return acc || [];
+    //         }, [])
+    //         .map((el) => {
+    //             return {
+    //                 ...el.genre,
+    //                 isActive: false,
+    //             };
+    //         });
+
+    //     list = [
+    //         { id: "", label: "All Genres", value: "all", isActive: true },
+    //         ...list,
+    //     ];
+    //     setGenres(list);
+    //     // console.log("genres", genres);
+    // }
+
     // ________________________________MIX________________________________
-    function doSomething() {
+    function doSubmit() {
         createMovie();
     }
 
@@ -153,6 +174,15 @@ const MoviesCollection = () => {
                         onSort={handleSorting}
                         onSelection={handleSelection}
                     />
+                    
+                    {/* <BootstrapPagination
+                            itemsCount={moviesLength}
+                            pageSize={pageSize}
+                            onBtnClick={this.handlePageChange}
+                            currentPage={currentPage}
+                            collection={moviesOnScreen}
+                        /> */}
+                    
                 </div>
             </div>
             <div className="row">
