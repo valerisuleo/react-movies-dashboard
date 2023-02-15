@@ -5,40 +5,29 @@ import BootstrapTable from "../common/table/ bootstrapTable";
 import useTableHooks from "./useTable";
 
 const MoviesCollection = () => {
-    const tableSchema = {
-        collection: [],
-        itemOnScreen: [],
-        cols: [],
+    const props = {
         pageSize: 4,
-        sortColumns: {
-            path: "title",
-            order: "asc",
-        },
+        cols: ["title", "numberInStock", "dailyRentalRate"],
+        actions: [
+            {
+                name: "edit",
+                label: "edit",
+                className: "btn btn-sm btn-primary",
+            },
+            {
+                name: "remove",
+                label: "delete",
+                className: "btn btn-sm ms-1 btn-danger",
+            },
+        ],
     };
-
-    const cols = ["title", "numberInStock", "dailyRentalRate"];
-    const actions = [
-        {
-            name: "edit",
-            label: "edit",
-            className: "btn btn-sm btn-primary",
-        },
-        {
-            name: "remove",
-            label: "delete",
-            className: "btn btn-sm ms-1 btn-danger",
-        },
-    ];
 
     // _______________________________HOOKS_______________________________
     const [movies, setMovies] = useState([]);
-
     const [table, handleClick, handleSelection] = useTableHooks(
-        tableSchema,
         movies,
         eventEmitter,
-        cols,
-        actions
+        props
     );
 
     useEffect(() => {
@@ -72,7 +61,7 @@ const MoviesCollection = () => {
     // ______________________________MARKUP______________________________
     return (
         <Fragment>
-            {JSON.stringify(movies)}
+            {/* {JSON.stringify(movies)} */}
             <div className="row mt-4">
                 <h2>Movies Dashboard Hooks</h2>
             </div>
