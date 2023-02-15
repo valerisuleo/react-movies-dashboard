@@ -29,7 +29,7 @@ function useBootsTable(schema, colsName, actions, collection, deleteItem) {
     }
 
     const handleClick = (current, currentBtn) => {
-        // console.log(currentBtn);
+        console.log('currentBtn', currentBtn);
         if (currentBtn.name === "remove") {
             deleteItem({
                 item: current,

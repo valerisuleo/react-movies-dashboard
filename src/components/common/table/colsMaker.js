@@ -12,7 +12,7 @@ export function colsMaker(obj, cols, actions) {
             };
         });
 
-    if (actions.length) {
+    if (actions?.length) {
         colsName.push({
             key: "actions",
             label: "",
