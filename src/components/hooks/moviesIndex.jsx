@@ -1,14 +1,41 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState, useCallback } from "react";
 import httpService from "../../services/httpService";
 import config from "../../config.json";
 import BootstrapTable from "../common/table/ bootstrapTable";
 import useTableHooks from "./useTable";
 
 const MoviesCollection = () => {
-    const props = {
-        pageSize: 4,
-        cols: ["title", "numberInStock", "dailyRentalRate"],
-        actions: [
+    const stateTable = {
+        collection: [],
+        itemOnScreen: [],
+        actions: [],
+        cols: [],
+        pageSize: 0,
+        sortColumns: {
+            path: "title",
+            order: "asc",
+        },
+    };
+
+    // _______________________________HOOKS_______________________________
+    const [props, setProps] = useState([]);
+    const [table, handleClick, handleSelection] = useTableHooks(
+        eventEmitter,
+        props,
+        stateTable
+    );
+
+    // _____________________________API CALLS_____________________________
+
+    const getMovies = useCallback(async () => {
+        const promise = httpService.get(`${config.portAPI}/movies`);
+        const response = await promise;
+        const { data } = response;
+        const clone = { ...stateTable };
+        clone.collection = data;
+        clone.cols = ["title", "numberInStock", "dailyRentalRate"];
+        clone.pageSize = 4;
+        clone.actions = [
             {
                 name: "edit",
                 label: "edit",
@@ -19,35 +46,19 @@ const MoviesCollection = () => {
                 label: "delete",
                 className: "btn btn-sm ms-1 btn-danger",
             },
-        ],
-    };
+        ];
 
-    // _______________________________HOOKS_______________________________
-    const [movies, setMovies] = useState([]);
-    const [table, handleClick, handleSelection] = useTableHooks(
-        movies,
-        eventEmitter,
-        props
-    );
-
-    useEffect(() => {
-        console.clear();
-        getMovies();
+        setProps(clone);
     }, []);
 
-    // _____________________________API CALLS_____________________________
-
-    async function getMovies() {
-        const promise = httpService.get(`${config.portAPI}/movies`);
-        const response = await promise;
-        const { data } = response;
-        setMovies(data);
-    }
+    useEffect(() => {
+        getMovies();
+    }, [getMovies]);
 
     async function deleteMovie(currentMovie) {
-        const result = movies.filter((item) => item.id !== currentMovie.id);
-        // await httpService.delete(`${config.portAPI}/movies/${currentMovie.id}`);
-        setMovies(result);
+        // const result = movies.filter((item) => item.id !== currentMovie.id);
+        // // await httpService.delete(`${config.portAPI}/movies/${currentMovie.id}`);
+        // setMovies(result);
     }
 
     function eventEmitter(data) {
