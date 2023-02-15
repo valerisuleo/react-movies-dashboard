@@ -23,7 +23,7 @@ const BootstrapTable = (props) => {
                                     <Fragment>
                                         {col.actions.map((btn, i) => (
                                             <button
-                                                onClick={() => onBtnClick(item, btn)}
+                                                onClick={() => onBtnClick(item, btn, col)}
                                                 className={btn.className}
                                                 key={i}
                                             >

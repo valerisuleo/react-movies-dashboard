@@ -16,10 +16,13 @@ function useTableHooks(eventEmitter, props, state) {
         prevCollectionRef.current = collection;
     }, [actions, collection, cols, table]);
 
-    const handleClick = (currentItem, event) => {
-        eventEmitter({ currentItem, event });
+    const handleClick = (currentItem, event, col) => {
+        eventEmitter({ currentItem, event, col });
     };
-    const handleSelection = (currentMovie, currentCol) => {};
+
+    const handleSelection = (currentItem, currentCol) => {
+        // eventEmitter({ currentItem, currentCol });
+    };
 
     return [table, handleClick, handleSelection];
 }

@@ -17,25 +17,10 @@ const MoviesCollection = () => {
         },
     };
 
-    // _______________________________HOOKS_______________________________
-    const [props, setProps] = useState([]);
-    const [table, handleClick, handleSelection] = useTableHooks(
-        eventEmitter,
-        props,
-        stateTable
-    );
-
-    // _____________________________API CALLS_____________________________
-
-    const getMovies = useCallback(async () => {
-        const promise = httpService.get(`${config.portAPI}/movies`);
-        const response = await promise;
-        const { data } = response;
-        const clone = { ...stateTable };
-        clone.collection = data;
-        clone.cols = ["title", "numberInStock", "dailyRentalRate"];
-        clone.pageSize = 4;
-        clone.actions = [
+    const cloneProps = {
+        cols: ["title", "numberInStock", "dailyRentalRate"],
+        pageSize: 4,
+        actions: [
             {
                 name: "edit",
                 label: "edit",
@@ -46,19 +31,25 @@ const MoviesCollection = () => {
                 label: "delete",
                 className: "btn btn-sm ms-1 btn-danger",
             },
-        ];
+        ],
+    };
 
+    // _____________________________API CALLS_____________________________
+    const getMovies = useCallback(async () => {
+        const response = await httpService.get(`${config.portAPI}/movies`);
+        const clone = { ...stateTable, ...cloneProps };
+        clone.collection = response.data;
         setProps(clone);
     }, []);
 
-    useEffect(() => {
-        getMovies();
-    }, [getMovies]);
-
     async function deleteMovie(currentMovie) {
-        // const result = movies.filter((item) => item.id !== currentMovie.id);
-        // // await httpService.delete(`${config.portAPI}/movies/${currentMovie.id}`);
-        // setMovies(result);
+        const clone = { ...table, ...cloneProps };
+        console.log("clone", clone);
+
+        clone.collection = clone.collection.filter(
+            (item) => item.id !== currentMovie.id
+        );
+        setProps(clone);
     }
 
     function eventEmitter(data) {
@@ -69,10 +60,23 @@ const MoviesCollection = () => {
         }
     }
 
+    // _______________________________HOOKS_______________________________
+    const [props, setProps] = useState([]);
+    const [table, handleClick, handleSelection] = useTableHooks(
+        eventEmitter,
+        props,
+        stateTable
+    );
+
+    useEffect(() => {
+        console.clear();
+        getMovies();
+    }, [getMovies]);
+
     // ______________________________MARKUP______________________________
     return (
         <Fragment>
-            {/* {JSON.stringify(movies)} */}
+            {JSON.stringify(props)}
             <div className="row mt-4">
                 <h2>Movies Dashboard Hooks</h2>
             </div>
